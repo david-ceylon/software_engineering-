@@ -33,12 +33,18 @@ cd software_engineering-
 npm install
 ```
 
-3. Start the server:
+3. (Optional) Configure environment variables:
+```bash
+cp .env.example .env
+# Edit .env and change JWT_SECRET to a secure random string
+```
+
+4. Start the server:
 ```bash
 npm start
 ```
 
-4. Open your browser and navigate to:
+5. Open your browser and navigate to:
 ```
 http://localhost:3000
 ```
@@ -52,9 +58,10 @@ http://localhost:3000
 
 ## Technology Stack
 
-- **Backend**: Node.js + Express
+- **Backend**: Node.js + Express 5.x
 - **Database**: SQLite
-- **Authentication**: JWT (JSON Web Tokens)
+- **Authentication**: JWT (JSON Web Tokens) + bcrypt
+- **Security**: Rate limiting, password hashing, protected routes
 - **Frontend**: HTML, CSS, JavaScript (Vanilla)
 
 ## Project Structure
@@ -72,8 +79,41 @@ software_engineering-/
 │   │   └── app.js       # Frontend JavaScript
 │   └── index.html       # Main HTML file
 ├── server.js            # Express server entry point
+├── .env.example         # Environment variables template
 └── package.json         # Project dependencies
 ```
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Create a new user account
+  - Body: `{ "email": string, "password": string, "name": string }`
+  - Returns: JWT token and user info
+- `POST /api/auth/login` - Login to existing account
+  - Body: `{ "email": string, "password": string }`
+  - Returns: JWT token and user info
+
+### Tasks (Requires Authentication)
+- `GET /api/tasks` - Get all tasks for the authenticated user
+  - Headers: `Authorization: Bearer <token>`
+- `POST /api/tasks` - Create a new task
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "title": string, "description": string }`
+- `PUT /api/tasks/:id` - Update a task
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "title": string, "description": string, "completed": boolean }`
+- `DELETE /api/tasks/:id` - Delete a task
+  - Headers: `Authorization: Bearer <token>`
+
+## Security Features
+
+- **Password Security**: Passwords are hashed using bcrypt before storage
+- **JWT Authentication**: Secure token-based authentication with 7-day expiry
+- **Rate Limiting**: 
+  - Auth endpoints: 5 requests per 15 minutes per IP
+  - Task endpoints: 100 requests per 15 minutes per IP
+- **SQL Injection Protection**: Parameterized queries prevent SQL injection attacks
+- **Protected Routes**: All task operations require valid JWT token
 
 ## License
 
