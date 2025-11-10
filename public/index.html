@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Planner - Gestion de Tâches</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Auth Section -->
+        <div id="auth-section">
+            <div class="auth-container">
+                <h1>💍 Wedding Planner</h1>
+                <p class="subtitle">Planifiez votre mariage parfait</p>
+                
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h2>Connexion</h2>
+                    <form id="login-form-element">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Mot de passe</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Se connecter</button>
+                        <p class="form-switch">
+                            Pas encore de compte ? 
+                            <a href="#" id="show-register">Créer un compte</a>
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form" style="display: none;">
+                    <h2>Créer un compte</h2>
+                    <form id="register-form-element">
+                        <div class="form-group">
+                            <label for="register-name">Nom(s) du couple</label>
+                            <input type="text" id="register-name" placeholder="Marie & Jean" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Mot de passe</label>
+                            <input type="password" id="register-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Créer mon compte</button>
+                        <p class="form-switch">
+                            Déjà un compte ? 
+                            <a href="#" id="show-login">Se connecter</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="main-section" style="display: none;">
+            <nav class="navbar">
+                <div class="nav-container">
+                    <h1>💍 Wedding Planner</h1>
+                    <div class="nav-user">
+                        <span id="user-name"></span>
+                        <button id="logout-btn" class="btn btn-secondary">Déconnexion</button>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container">
+                <div class="tasks-section">
+                    <div class="section-header">
+                        <h2>Ma liste de tâches</h2>
+                        <button id="add-task-btn" class="btn btn-primary">+ Ajouter une tâche</button>
+                    </div>
+
+                    <!-- Add Task Form -->
+                    <div id="add-task-form" class="task-form" style="display: none;">
+                        <h3>Nouvelle tâche</h3>
+                        <form id="task-form-element">
+                            <div class="form-group">
+                                <label for="task-title">Titre</label>
+                                <input type="text" id="task-title" placeholder="Ex: Réserver le traiteur" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-description">Description</label>
+                                <textarea id="task-description" placeholder="Détails de la tâche..." rows="3"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                                <button type="button" id="cancel-task-btn" class="btn btn-secondary">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tasks List -->
+                    <div id="tasks-list" class="tasks-list">
+                        <p class="loading">Chargement...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
