@@ -106,14 +106,6 @@ function Dashboard({ user, onLogout }) {
     } catch (err) { console.error(err); }
   };
   */
-        }),
-      });
-      const data = await res.json();
-      alert(res.ok ? data.message : data.error);
-      setInviteEmail('');
-      reloadData(user.id, user.wedding_id); 
-    } catch (err) { alert("Erreur serveur"); }
-  };
 
   const isCollaborator = user?.role === 'collaborator';
 
