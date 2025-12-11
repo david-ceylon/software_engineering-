@@ -25,11 +25,11 @@ function Dashboard({ user, onLogout }) {
   // --- Chargement des Données ---
   const reloadData = async (userId, weddingId) => {
     try {
-        const resTasks = await fetch(`http://localhost:5001/tasks/${userId}`);
+        const resTasks = await fetch(`/tasks/${userId}`);
         setTasks(await resTasks.json());
 
         if (weddingId) {
-            const resMembers = await fetch(`http://localhost:5001/wedding/${weddingId}/members?t=${Date.now()}`);
+            const resMembers = await fetch(`/wedding/${weddingId}/members?t=${Date.now()}`);
             const membersData = await resMembers.json();
             console.log("Members loaded:", membersData);
             setMembers(membersData);
@@ -44,7 +44,7 @@ function Dashboard({ user, onLogout }) {
   // --- Actions Tâches ---
   const toggleStatus = async (task) => {
     const newStatus = task.status === 'Done' ? 'To Do' : 'Done';
-    await fetch(`http://localhost:5001/tasks/${task.id}/status`, {
+    await fetch(`/tasks/${task.id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus, user_id: user.id }),
@@ -61,7 +61,7 @@ function Dashboard({ user, onLogout }) {
           assigned_to: taskData?.assigned_to || user.id
       };
       
-      await fetch('http://localhost:5001/tasks', {
+      await fetch('/tasks', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newTask)
@@ -70,7 +70,7 @@ function Dashboard({ user, onLogout }) {
   };
 
   const updateTask = async (updatedTask) => {
-      await fetch(`http://localhost:5001/tasks/${updatedTask.id}`, {
+      await fetch(`/tasks/${updatedTask.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...updatedTask, user_id: user.id })
@@ -79,7 +79,7 @@ function Dashboard({ user, onLogout }) {
   };
 
   const deleteTask = async (taskId) => {
-      await fetch(`http://localhost:5001/tasks/${taskId}`, {
+      await fetch(`/tasks/${taskId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: user.id })
@@ -91,7 +91,7 @@ function Dashboard({ user, onLogout }) {
   const handleInvite = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5001/invite', {
+      const res = await fetch('/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

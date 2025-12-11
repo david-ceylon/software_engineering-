@@ -21,7 +21,7 @@ async function check() {
 
             // Fetch from API
             console.log("Fetching from API...");
-            const apiRes = await fetch(`http://127.0.0.1:5001/wedding/${weddingId}/members`);
+            const apiRes = await fetch(`/wedding/${weddingId}/members`);
             const apiJson = await apiRes.json();
             console.log("Members from API:", apiJson);
         }

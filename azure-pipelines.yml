@@ -1,0 +1,114 @@
+trigger:
+- main
+
+pool: 'MonPC'
+
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: Build
+    displayName: 'Build All'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '24.x'
+      displayName: 'Install Node.js'
+
+    - script: |
+        cd frontend
+        call npm install
+        set CI=false
+        call npm run build
+      displayName: 'Build Frontend'
+
+    - script: |
+        cd backend
+        call npm install
+        echo [config] > .deployment
+        echo SCM_DO_BUILD_DURING_DEPLOYMENT=true >> .deployment
+      displayName: 'Install Backend & Config'
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'backend'
+        Contents: |
+          **
+          !node_modules/**
+          !.env
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/app'
+      displayName: 'Copy Backend'
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'frontend/build'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/app/public'
+      displayName: 'Inject Frontend'
+
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/wedding-app.zip'
+        replaceExistingArchive: true
+      displayName: 'Zip App'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/wedding-app.zip'
+        ArtifactName: 'drop'
+
+- stage: Deploy
+  displayName: 'Deploy Stage'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy Web App'
+    pool: 'MonPC'
+    steps:
+    # 👇 1. AJOUT CRUCIAL : On télécharge le ZIP créé à l'étape précédente
+    # 1. On récupère le colis (le ZIP)
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    # 2. DÉPLOIEMENT DIRECT (SCRIPT POWERSHELL)
+    # On envoie le zip directement à l'API "Kudu" d'Azure, sans passer par les tâches complexes
+    
+    - task: PowerShell@2
+      displayName: 'Deploy via Kudu API (Fixed Region)'
+      inputs:
+        targetType: 'inline'
+        script: |
+          # --- CONFIGURATION EXACTE ---
+          # On cible le NOUVEAU site (V2)
+          $apiUrl = "https://wedding-app-david-v2-hwa6bda6debccpe8.scm.israelcentral-01.azurewebsites.net/api/zipdeploy"
+          $zipPath = "$(System.ArtifactsDirectory)\drop\wedding-app.zip"
+
+          # 👇 CORRECTION ICI : Ajout de "$env:" devant les variables
+          $username = $env:DEPLOY_USER
+          $password = $env:DEPLOY_PWD
+          
+          # Encodage
+          $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password)))
+
+          Write-Host "🚀 Déploiement vers : $apiUrl"
+
+          try {
+              Invoke-RestMethod -Uri $apiUrl -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -Method Post -InFile $zipPath -ContentType "application/zip" -TimeoutSec 600
+              Write-Host "✅ SUCCÈS ! Votre code est envoyé." -ForegroundColor Green
+          }
+          catch {
+              Write-Error "❌ Échec : $($_.Exception.Message)"
+              Write-Host "Vérifiez que SCM Basic Auth est activé dans le portail Azure."
+              exit 1
+          }
+      env:
+        DEPLOY_USER: $(DeployUser)
+        DEPLOY_PWD: $(DeployPassword)

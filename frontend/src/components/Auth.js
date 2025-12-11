@@ -8,11 +8,11 @@ function Auth({ onLogin }) {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleAuth = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isLogin ? '/login' : '/register';
     try {
-      const res = await fetch(`http://localhost:5001${endpoint}`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -41,7 +41,7 @@ function Auth({ onLogin }) {
              <p style={{cursor:"pointer", color:"blue", marginTop:"10px"}} onClick={() => {setIsForgot(false); setMsg("");}}>Retour</p>
          </form>
        ) : (
-         <form onSubmit={handleAuth}>
+         <form onSubmit={handleSubmit}>
              {!isLogin && <input name="name" type="text" placeholder="Nom" value={formData.name} onChange={handleChange} style={{display:"block", width:"90%", margin:"10px auto", padding:"8px"}} />}
              <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required style={{display:"block", width:"90%", margin:"10px auto", padding:"8px"}} />
              <input name="password" type="password" placeholder="Mot de passe" value={formData.password} onChange={handleChange} required style={{display:"block", width:"90%", margin:"10px auto", padding:"8px"}} />

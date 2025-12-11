@@ -52,7 +52,7 @@ function GuestsPage({ user, members }) {
 
     const pollSettings = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/wedding/${user.wedding_id}/settings`);
+        const res = await fetch(`/wedding/${user.wedding_id}/settings`);
         if (!mounted) return;
         if (res.ok) {
           const json = await res.json();
@@ -75,8 +75,8 @@ function GuestsPage({ user, members }) {
   const fetchData = async () => {
     if (!user?.wedding_id) return;
     try {
-      const resGuests = await fetch(`http://localhost:5001/wedding/${user.wedding_id}/guests`);
-      const resTables = await fetch(`http://localhost:5001/wedding/${user.wedding_id}/tables`);
+      const resGuests = await fetch(`/wedding/${user.wedding_id}/guests`);
+      const resTables = await fetch(`/wedding/${user.wedding_id}/tables`);
       const guestsJson = await resGuests.json();
       const tablesJson = await resTables.json();
       setGuests(guestsJson);
@@ -84,7 +84,7 @@ function GuestsPage({ user, members }) {
 
       // fetch settings (max guests)
       try {
-        const resSettings = await fetch(`http://localhost:5001/wedding/${user.wedding_id}/settings`);
+        const resSettings = await fetch(`/wedding/${user.wedding_id}/settings`);
         if (resSettings.ok) {
           const json = await resSettings.json();
           setMaxGuests(json.max_guests || 0);
@@ -139,13 +139,13 @@ function GuestsPage({ user, members }) {
 
   const handleDeleteGuest = async (id) => {
     if (!window.confirm("Delete guest?")) return;
-    await fetch(`http://localhost:5001/guests/${id}`, { method: 'DELETE' });
+    await fetch(`/guests/${id}`, { method: 'DELETE' });
     fetchData();
   };
 
   // --- Table Actions ---
   const handleAddTable = async () => {
-    await fetch('http://localhost:5001/tables', {
+    await fetch('/tables', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...newTable, wedding_id: user.wedding_id })
@@ -157,13 +157,13 @@ function GuestsPage({ user, members }) {
 
   const handleDeleteTable = async (id) => {
     if (!window.confirm("Delete table?")) return;
-    await fetch(`http://localhost:5001/tables/${id}`, { method: 'DELETE' });
+    await fetch(`/tables/${id}`, { method: 'DELETE' });
     fetchData();
   };
 
   const saveMaxGuests = async () => {
     if (!user || user.role !== 'admin') return;
-    await fetch(`http://localhost:5001/wedding/${user.wedding_id}/settings`, {
+    await fetch(`/wedding/${user.wedding_id}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ max_guests: Number(editingMaxGuests) || 0 })
@@ -173,7 +173,7 @@ function GuestsPage({ user, members }) {
   };
 
   const handleRemoveGuestFromTable = async (guestId) => {
-      await fetch(`http://localhost:5001/guests/${guestId}`, {
+      await fetch(`/guests/${guestId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ table_id: null })
@@ -188,7 +188,7 @@ function GuestsPage({ user, members }) {
         capacity: field === 'capacity' ? tableForm.capacity : selectedTable.capacity
     };
 
-    await fetch(`http://localhost:5001/tables/${selectedTable.id}`, {
+    await fetch(`/tables/${selectedTable.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedData)
@@ -201,7 +201,7 @@ function GuestsPage({ user, members }) {
 
   const handleAssignGuestToTable = async (guestId) => {
     if (!selectedTableForAssignment) return;
-    await fetch(`http://localhost:5001/guests/${guestId}`, {
+    await fetch(`/guests/${guestId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ table_id: selectedTableForAssignment })
