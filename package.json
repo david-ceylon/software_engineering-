@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build && cd ../backend && npm install && mkdir -p public && cp -r ../frontend/build/* public/"
+  },
   "dependencies": {
     "chromedriver": "^142.0.3",
     "selenium-webdriver": "^4.38.0"
