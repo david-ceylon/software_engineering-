@@ -68,7 +68,7 @@ function TaskModal({ task, onClose, onUpdate, onDelete, members, user, readOnly,
               <label style={styles.label}>Assigned To</label>
               {readOnly ? (
                 <div style={styles.readOnlyField}>
-                  {members.find(m => m.id == editedTask.assigned_to)?.name || 'Unassigned'}
+                  {members.find(m => m.id === editedTask.assigned_to)?.name || 'Unassigned'}
                 </div>
               ) : (
                 <select 
@@ -94,7 +94,7 @@ function TaskModal({ task, onClose, onUpdate, onDelete, members, user, readOnly,
           {readOnly ? (
             <>
               <button onClick={handleSave} style={styles.closeFooterButton}>{'Close'}</button>
-              {onToggleStatus && task.assigned_to == user.id && (
+              {onToggleStatus && task.assigned_to === user.id && (
                 <button
                   onClick={() => { onToggleStatus(task); onClose(); }}
                   style={{ ...styles.saveButton, backgroundColor: '#4CAF50' }}
@@ -197,7 +197,7 @@ function TasksPage({ tasks, members, onAddTask, onUpdateTask, onDeleteTask, onTo
       if (sortColumn === 'title') return (t.title || '').toLowerCase();
       if (sortColumn === 'description') return (t.description || '').toLowerCase();
       if (sortColumn === 'assigned') {
-        return (members.find(m => m.id == t.assigned_to)?.name || 'zzzz').toLowerCase();
+        return (members.find(m => m.id === t.assigned_to)?.name || 'zzzz').toLowerCase();
       }
       if (sortColumn === 'due_date') return t.due_date || '';
       return '';
@@ -293,7 +293,7 @@ function TasksPage({ tasks, members, onAddTask, onUpdateTask, onDeleteTask, onTo
                   checked={task.status === 'Done'}
                   onChange={() => onToggleStatus && onToggleStatus(task)}
                   style={styles.checkbox}
-                  disabled={isCollaborator && task.assigned_to != user.id}
+                  disabled={isCollaborator && task.assigned_to !== user.id}
                 />
               </div>
 
@@ -324,7 +324,7 @@ function TasksPage({ tasks, members, onAddTask, onUpdateTask, onDeleteTask, onTo
               {/* Assigned To Column */}
               <div style={{ ...styles.cell, flex: 1 }}>
                 <span style={styles.assignedText}>
-                   {members.find(m => m.id == task.assigned_to)?.name || 'Unassigned'}
+                   {members.find(m => m.id === task.assigned_to)?.name || 'Unassigned'}
                 </span>
               </div>
 

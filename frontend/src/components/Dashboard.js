@@ -14,12 +14,12 @@ function Dashboard({ user, onLogout }) {
   
   // États Tâches & Membres
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState({ title: '', desc: '', due_date: '' });
+  // const [newTask, setNewTask] = useState({ title: '', desc: '', due_date: '' }); // Unused
   const [members, setMembers] = useState([]); 
 
   // États Invitation
   const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState('admin');
+  // const [inviteRole, setInviteRole] = useState('admin'); // Unused
   const [profileOpen, setProfileOpen] = useState(false);
 
   // --- Chargement des Données ---
@@ -88,6 +88,7 @@ function Dashboard({ user, onLogout }) {
   };
 
   // --- Invitation ---
+  /*
   const handleInvite = async (e) => {
     e.preventDefault();
     try {
@@ -98,6 +99,13 @@ function Dashboard({ user, onLogout }) {
             email: inviteEmail, 
             currentUserId: user.id,
             role: inviteRole
+        })
+      });
+      if (res.ok) { alert('Invitation envoyée !'); setInviteEmail(''); }
+      else { alert('Erreur invitation'); }
+    } catch (err) { console.error(err); }
+  };
+  */
         }),
       });
       const data = await res.json();

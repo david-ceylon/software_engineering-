@@ -42,7 +42,10 @@ function GuestsPage({ user, members }) {
   const [editingField, setEditingField] = useState(null); // 'name' or 'capacity'
 
   useEffect(() => {
-    fetchData();
+    if (user?.wedding_id) {
+        fetchData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // Poll wedding settings so multiple admins see updated max_guests
