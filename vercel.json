@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/login",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/register",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/tasks(.*)",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/wedding(.*)",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/invite(.*)",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/guests(.*)",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/tables(.*)",
+      "dest": "/backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
+    }
+  ]
+}

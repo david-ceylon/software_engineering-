@@ -379,6 +379,10 @@ app.get(/.*/, (req, res) => {
 });
 
 // Lancement
-app.listen(port, () => {
-  console.log(`🚀 Serveur complet lancé sur http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`🚀 Serveur complet lancé sur http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
